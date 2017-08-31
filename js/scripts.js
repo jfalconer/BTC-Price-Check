@@ -4,9 +4,7 @@ const dqs = (query) => document.querySelector(query);
 const dqsa = (query) => document.querySelectorAll(query);
 
 document.addEventListener('DOMContentLoaded', function () {
-  const getPriceBtns = dqsa('.currency-buttons .dropdown-item');
-  getPriceBtns.forEach(getPrice => getPrice.addEventListener('click', getBtcData));
-  console.log(getPriceBtns.length);
+  dqsa('.currency-buttons .dropdown-item').forEach(getPrice => getPrice.addEventListener('click', getBtcData));
 });
 
 const apiBase = 'https://api.coindesk.com/v1/bpi/';
