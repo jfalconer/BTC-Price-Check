@@ -1,0 +1,19 @@
+{
+  "name": "btc-price-check",
+  "version": "1.0.0",
+  "description": "BTC Price Check is a small project to help me learn JavaScript. It uses the CoinDesk API to retrieve the value of a Bitcoin in various currencies.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jfalconer/BTC-Price-Check.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jfalconer/BTC-Price-Check/issues"
+  },
+  "homepage": "https://github.com/jfalconer/BTC-Price-Check#readme"
+}
