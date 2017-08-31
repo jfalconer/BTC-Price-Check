@@ -4,7 +4,13 @@ BTC Price Check is a small project to help me learn JavaScript. It uses the Coin
 
 ## To Do
 
-- [ ] Clean up the existing code, figure out the proper way to process histPrice from json
+- [ ] Clean up the existing code
+  - [x] Figure out the proper way to process histPrice from json
+  - [x] Replace unnecessary element variables with inline dqs
+  - [ ] Move various currency variables into an object
+  - [ ] Improve data attributes in HTML
+  - [ ] Improve variable names
+  - [ ] Remove percentage color coding classes before applying a new one
 - [ ] Build a better currency picker
   - [ ] Use the CoinDesk supported currencies json to build a searchable currency menu, retrieve currency code and currency long name
   - [ ] Map currency codes to currency symbols
