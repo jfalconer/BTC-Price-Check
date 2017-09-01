@@ -29,7 +29,7 @@ function getBtcData (e) {
 //  const crncSig = e.target.dataset.crncysig;
 //  const crncLongName = e.target.dataset.crnclongname;
 
-  axios.all([getCurrentPrice(currency.code), getYesterdaysPrice(currency.code)])
+  axios.all([getCurrentPrice(currency), getYesterdaysPrice(currency)])
   .then(axios.spread(function (current, yesterday) {
     let price = Number(current.data.bpi[currency.code].rate.replace(',','')).toFixed(2);
     let yesterdayDate = Object.keys(yesterday.data.bpi);
