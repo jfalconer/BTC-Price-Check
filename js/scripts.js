@@ -9,12 +9,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const apiBase = 'https://api.coindesk.com/v1/bpi/';
 
-function getCurrentPrice(currency) {
-  return axios.get(`${apiBase}currentprice/${currency.code}.json`);
+function getCurrentPrice(currencyCode) {
+  return axios.get(`${apiBase}currentprice/${currencyCode}.json`);
 }
 
-function getYesterdaysPrice(currency) {
-  return axios.get(`${apiBase}historical/close.json?currency=${currency.code}&for=yesterday`);
+function getYesterdaysPrice(currencyCode) {
+  return axios.get(`${apiBase}historical/close.json?currency=${currencyCode}&for=yesterday`);
 }
 
 function getBtcData (e) {
@@ -25,11 +25,7 @@ function getBtcData (e) {
     longName: e.target.dataset.crnclongname,
   };
 
-//  const currency = e.target.dataset.currency;
-//  const crncSig = e.target.dataset.crncysig;
-//  const crncLongName = e.target.dataset.crnclongname;
-
-  axios.all([getCurrentPrice(currency), getYesterdaysPrice(currency)])
+  axios.all([getCurrentPrice(currency.code), getYesterdaysPrice(currency.code)])
   .then(axios.spread(function (current, yesterday) {
     let price = Number(current.data.bpi[currency.code].rate.replace(',','')).toFixed(2);
     let yesterdayDate = Object.keys(yesterday.data.bpi);
@@ -41,11 +37,13 @@ function getBtcData (e) {
     dqs('.historical-price').innerHTML = `<p>Yesterday, the price was <strong>${currency.signature}${histPrice}</strong>.</p>`;
     dqs('.price-change').innerHTML = `<span class="price-change-pcnt">${pricePcntChange}%</span>`;
     if (pricePcntChange > 0) {
+      dqs('.price-change').classList.remove('pcnt-down-text');
       dqs('.price-change-context').innerHTML = `Since then, its value has grown by `;
       dqs('.price-change').classList.add('pcnt-up-text');
       dqs('.price-change-append').innerHTML = ` - make it rain!`;
     }
     else if (pricePcntChange < 0) {
+      dqs('.price-change').classList.remove('pcnt-up-text');
       dqs('.price-change-context').innerHTML = `Since then, its value has decreased by `;
       dqs('.price-change').classList.add('pcnt-down-text');
       dqs('.price-change-append').innerHTML = ` - good time to buy!`;
