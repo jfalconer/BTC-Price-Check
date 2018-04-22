@@ -2,12 +2,22 @@
 
 const dqs = (query) => document.querySelector(query);
 const dqsa = (query) => document.querySelectorAll(query);
+const apiBase = 'https://api.coindesk.com/v1/bpi/';
+
+let cryptoQuotes = [
+  ["We have elected to put our money and faith in a mathematical framework that is free of politics and human error.", "Tyler Winklevoss"],
+  ["I think the internet is going to be one of the major forces for reducing the role of government. The one thing that’s missing but that will soon be developed, is a reliable e-cash.", "Milton Friedman"],
+  ["Bitcoin is a technological tour de force.", "Bill Gates"]
+];
 
 document.addEventListener('DOMContentLoaded', function () {
   dqsa('.currency-buttons .dropdown-item').forEach(getPrice => getPrice.addEventListener('click', getBtcData));
-});
 
-const apiBase = 'https://api.coindesk.com/v1/bpi/';
+  let cryptoQuoteIndex = Math.floor(Math.random() * cryptoQuotes.length);
+  dqs('#quote-text').innerHTML = `\"${cryptoQuotes[cryptoQuoteIndex][0]}\"`;
+  dqs('#quote-source').innerHTML = `${cryptoQuotes[cryptoQuoteIndex][1]}`;
+
+});
 
 function getCurrentPrice(currencyCode) {
   return axios.get(`${apiBase}currentprice/${currencyCode}.json`);
@@ -35,18 +45,11 @@ function getBtcData (e) {
     // display the content
     dqs('.price').innerHTML = `<p>The current price of a Bitcoin in ${currency.longName} is <strong>${currency.signature}${price}<strong>.</p>`;
     dqs('.historical-price').innerHTML = `<p>Yesterday, the price was <strong>${currency.signature}${histPrice}</strong>.</p>`;
-    dqs('.price-change').innerHTML = `<span class="price-change-pcnt">${pricePcntChange}%</span>`;
     if (pricePcntChange > 0) {
-      dqs('.price-change').classList.remove('pcnt-down-text');
-      dqs('.price-change-context').innerHTML = `Since then, its value has grown by `;
-      dqs('.price-change').classList.add('pcnt-up-text');
-      dqs('.price-change-append').innerHTML = ` - make it rain!`;
+      dqs('.price-change').innerHTML = `Since then, its value has grown by <span class="price-change-pcnt pcnt-up-text">${pricePcntChange}%</span>. Make it rain!`;
     }
     else if (pricePcntChange < 0) {
-      dqs('.price-change').classList.remove('pcnt-up-text');
-      dqs('.price-change-context').innerHTML = `Since then, its value has decreased by `;
-      dqs('.price-change').classList.add('pcnt-down-text');
-      dqs('.price-change-append').innerHTML = ` - good time to buy!`;
+      dqs('.price-change').innerHTML = `Since then, its value has decreased by <span class="price-change-pcnt pcnt-down-text">${pricePcntChange}%</span>. The end is near!`;
     }
   }));
 }

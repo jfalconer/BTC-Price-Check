@@ -10,12 +10,12 @@ BTC Price Check is a small project to help me learn JavaScript. It uses the Coin
   - [x] Move various currency variables into an object
   - [ ] Improve data attributes in HTML
   - [ ] Improve variable names
-  - [ ] Remove percentage color coding classes before applying a new one
+  - [x] Simplify percentage change code
 - [ ] Build a better currency picker
   - [ ] Use the CoinDesk supported currencies json to build a searchable currency menu, retrieve currency code and currency long name
   - [ ] Map currency codes to currency symbols
-- [ ] Build a quote rotator
-  - [ ] Collect a bunch of Bitcoin quotes and load one at random
+- [x] Build a quote rotator
+  - [x] Collect a bunch of Bitcoin quotes and load one at random
 - [ ] Currency converter
   - [ ] Build a converter that uses the current price to calculate the value of custom amounts in BTC / fiat pairs
   - [ ] Build a switcher button that flips the pairs
