@@ -7,8 +7,8 @@ BTC Price Check is a small project to help me learn JavaScript. It uses the Coin
 - [ ] Clean up the existing code
   - [x] Figure out the proper way to process histPrice from json
   - [x] Replace unnecessary element variables with inline dqs
-  - [x] Move various currency variables into an object
-  - [ ] Improve data attributes in HTML
+  - [x] ~~Move various currency variables into an object~~ Currency object now constructed after user choice
+  - [x] Improve data attributes in HTML
   - [ ] Improve variable names
   - [x] Simplify percentage change code
 - [ ] Build a better currency picker
