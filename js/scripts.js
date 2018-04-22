@@ -43,10 +43,10 @@ function Currency (currencyCode, currencySymbol, currencyName, countryCode) {
 }
 
 Currency.prototype = {
-  getTodayPrice: function () {
+  getTodaysPrice: function () {
     return axios.get(`${apiBase}currentprice/${this.code}.json`);
   },
-  getYesterdayPrice: function () {
+  getYesterdaysPrice: function () {
     return axios.get(`${apiBase}historical/close.json?currency=${this.code}&for=yesterday`);
   }
 }
@@ -60,7 +60,7 @@ function getBtcData (e) {
                               currencyInfo[e.target.dataset.currency][3]
                             );
 
-  axios.all([yourCurrency.getTodayPrice(), yourCurrency.getYesterdayPrice()])
+  axios.all([yourCurrency.getTodaysPrice(), yourCurrency.getYesterdaysPrice()])
   .then(axios.spread(function (current, yesterday) {
     let price = Number(current.data.bpi[yourCurrency.code].rate.replace(',','')).toFixed(2);
     let yesterdayDate = Object.keys(yesterday.data.bpi);
@@ -68,13 +68,13 @@ function getBtcData (e) {
     let pricePcntChange = ((price - histPrice) / price * 100).toFixed(2);
 
     // display the content
-    dqs('.price').innerHTML = `<p>The current price of a Bitcoin in <span class="flag-icon flag-icon-${yourCurrency.flag}"></span> ${yourCurrency.name} is <strong>${yourCurrency.symbol}${Number(price).toLocaleString()}</strong>.</p>`;
-    dqs('.historical-price').innerHTML = `<p>Yesterday, the price was <strong>${yourCurrency.symbol}${Number(histPrice).toLocaleString()}</strong>.</p>`;
+    dqs('#price').innerHTML = `<p>The current price of a Bitcoin in <span class="flag-icon flag-icon-${yourCurrency.flag}"></span> ${yourCurrency.name} is <strong>${yourCurrency.symbol}${Number(price).toLocaleString()}</strong>.</p>`;
+    dqs('#historical-price').innerHTML = `<p>Yesterday, the price was <strong>${yourCurrency.symbol}${Number(histPrice).toLocaleString()}</strong>.</p>`;
     if (pricePcntChange > 0) {
-      dqs('.price-change').innerHTML = `Since then, its value has grown by <span class="price-change-pcnt pcnt-up-text">${pricePcntChange}%</span>. Make it rain!`;
+      dqs('#price-change').innerHTML = `Since then, its value has grown by <span id="price-change-pcnt" class="pcnt-up-text">${pricePcntChange}%</span>. Make it rain!`;
     }
     else if (pricePcntChange < 0) {
-      dqs('.price-change').innerHTML = `Since then, its value has decreased by <span class="price-change-pcnt pcnt-down-text">${pricePcntChange}%</span>. The end is near!`;
+      dqs('#price-change').innerHTML = `Since then, its value has decreased by <span id="price-change-pcnt" class="pcnt-down-text">${pricePcntChange}%</span>. The end is near!`;
     }
   }));
 }
