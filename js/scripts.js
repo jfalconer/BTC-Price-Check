@@ -43,8 +43,8 @@ function getBtcData (e) {
     let pricePcntChange = ((price - histPrice) / price * 100).toFixed(2);
 
     // display the content
-    dqs('.price').innerHTML = `<p>The current price of a Bitcoin in ${currency.longName} is <strong>${currency.signature}${price}<strong>.</p>`;
-    dqs('.historical-price').innerHTML = `<p>Yesterday, the price was <strong>${currency.signature}${histPrice}</strong>.</p>`;
+    dqs('.price').innerHTML = `<p>The current price of a Bitcoin in ${currency.longName} is <strong>${currency.signature}${Number(price).toLocaleString()}</strong>.</p>`;
+    dqs('.historical-price').innerHTML = `<p>Yesterday, the price was <strong>${currency.signature}${Number(histPrice).toLocaleString()}</strong>.</p>`;
     if (pricePcntChange > 0) {
       dqs('.price-change').innerHTML = `Since then, its value has grown by <span class="price-change-pcnt pcnt-up-text">${pricePcntChange}%</span>. Make it rain!`;
     }
