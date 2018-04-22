@@ -7,8 +7,14 @@ const apiBase = 'https://api.coindesk.com/v1/bpi/';
 let cryptoQuotes = [
   ["We have elected to put our money and faith in a mathematical framework that is free of politics and human error.", "Tyler Winklevoss"],
   ["I think the internet is going to be one of the major forces for reducing the role of government. The one thing that’s missing but that will soon be developed, is a reliable e-cash.", "Milton Friedman"],
-  ["Bitcoin is a technological tour de force.", "Bill Gates"]
+  ["Bitcoin is a technological tour de force.", "Bill Gates"],
+  ["Cryptocurrency is such a powerful concept that it can almost overturn governments.", "Charles Lee"],
+  ["Cryptography shifts the balance of power from those with a monopoly on violence to those who comprehend mathematics and security design.", "Jacob Appelbaum"],
+  ["Bitcoin will do to banks what email did to the postal industry.", "Rick Falkvinge"],
+  ["Someday consumers and businesses won’t hold Bitcoins for their account but will unknowingly access the Bitcoin network whenever payments are made.", "Paul Vigna"],
+  ["I think the fact that within the Bitcoin universe an algorithm replaces the functions of the government is actually pretty cool. I am a big fan of Bitcoin.", "Al Gore"]
 ];
+
 let currencyInfo = [
   ["AUD", "$", "Australian dollars", "au"],
   ["USD", "$", "United States dollars", "us"],
