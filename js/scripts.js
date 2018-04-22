@@ -10,20 +10,24 @@ let cryptoQuotes = [
   ["Bitcoin is a technological tour de force.", "Bill Gates"]
 ];
 let currencyInfo = [
-  ["AUD", "$", "Australian dollars"],
-  ["USD", "$", "United States dollars"],
-  ["CAD", "$", "Canadian dollars"],
-  ["CNY", "¥", "Chinese yuan"],
-  ["CHF", "Fr.", "Swiss francs"],
-  ["EUR", "€", "Euros"],
-  ["GBP", "£", "Great Britain pounds"],
-  ["RUB", "₽", "Russian rubles"],
+  ["AUD", "$", "Australian dollars", "au"],
+  ["USD", "$", "United States dollars", "us"],
+  ["CAD", "$", "Canadian dollars", "ca"],
+  ["CNY", "¥", "Chinese yuan", "cn"],
+  ["CHF", "Fr.", "Swiss francs", "ch"],
+  ["EUR", "€", "Euros", "eu"],
+  ["GBP", "£", "Great Britain pounds", "gb"],
+  ["RUB", "₽", "Russian rubles", "ru"],
+  ["BRL", "R$", "Brazilian real", "br"]
 ];
 
+// create currency picker dropdown
+for (let i = 0; i < currencyInfo.length; i++) {
+  dqs('.currency-selection').innerHTML += `<a data-currency="${i}" class="dropdown-item" href="#"><span class="flag-icon flag-icon-${currencyInfo[i][3]}"></span>&nbsp;&nbsp;${currencyInfo[i][0]}</a>`;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-  for (let i = 0; i < currencyInfo.length; i++) {
-    dqs('.currency-selection').innerHTML += `<a data-currency="${i}" class="dropdown-item" href="#">${currencyInfo[i][0]}</a>`;
-  }
+
   dqsa('.currency-buttons .dropdown-item').forEach(getPrice => getPrice.addEventListener('click', getBtcData));
   let cryptoQuoteIndex = Math.floor(Math.random() * cryptoQuotes.length);
   dqs('#quote-text').innerHTML = `\"${cryptoQuotes[cryptoQuoteIndex][0]}\"`;
@@ -31,10 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-function Currency (currencyCode, currencySymbol, currencyName) {
+function Currency (currencyCode, currencySymbol, currencyName, countryCode) {
   this.code = currencyCode;
   this.symbol = currencySymbol;
   this.name = currencyName;
+  this.flag = countryCode;
 }
 
 Currency.prototype = {
@@ -51,7 +56,8 @@ function getBtcData (e) {
   let yourCurrency = new Currency(
                               currencyInfo[e.target.dataset.currency][0],
                               currencyInfo[e.target.dataset.currency][1],
-                              currencyInfo[e.target.dataset.currency][2]
+                              currencyInfo[e.target.dataset.currency][2],
+                              currencyInfo[e.target.dataset.currency][3]
                             );
 
   axios.all([yourCurrency.getTodayPrice(), yourCurrency.getYesterdayPrice()])
@@ -62,7 +68,7 @@ function getBtcData (e) {
     let pricePcntChange = ((price - histPrice) / price * 100).toFixed(2);
 
     // display the content
-    dqs('.price').innerHTML = `<p>The current price of a Bitcoin in ${yourCurrency.name} is <strong>${yourCurrency.symbol}${Number(price).toLocaleString()}</strong>.</p>`;
+    dqs('.price').innerHTML = `<p>The current price of a Bitcoin in <span class="flag-icon flag-icon-${yourCurrency.flag}"></span> ${yourCurrency.name} is <strong>${yourCurrency.symbol}${Number(price).toLocaleString()}</strong>.</p>`;
     dqs('.historical-price').innerHTML = `<p>Yesterday, the price was <strong>${yourCurrency.symbol}${Number(histPrice).toLocaleString()}</strong>.</p>`;
     if (pricePcntChange > 0) {
       dqs('.price-change').innerHTML = `Since then, its value has grown by <span class="price-change-pcnt pcnt-up-text">${pricePcntChange}%</span>. Make it rain!`;
