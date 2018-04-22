@@ -21,22 +21,16 @@ let currencyInfo = [
 ];
 
 document.addEventListener('DOMContentLoaded', function () {
+  for (let i = 0; i < currencyInfo.length; i++) {
+    dqs('.currency-selection').innerHTML += `<a data-currency="${i}" class="dropdown-item" href="#">${currencyInfo[i][0]}</a>`;
+  }
   dqsa('.currency-buttons .dropdown-item').forEach(getPrice => getPrice.addEventListener('click', getBtcData));
-
   let cryptoQuoteIndex = Math.floor(Math.random() * cryptoQuotes.length);
   dqs('#quote-text').innerHTML = `\"${cryptoQuotes[cryptoQuoteIndex][0]}\"`;
   dqs('#quote-source').innerHTML = `${cryptoQuotes[cryptoQuoteIndex][1]}`;
 
 });
-//
-function getCurrentPrice(currencyCode) {
-  return axios.get(`${apiBase}currentprice/${currencyCode}.json`);
-}
 
-function getYesterdaysPrice(currencyCode) {
-  return axios.get(`${apiBase}historical/close.json?currency=${currencyCode}&for=yesterday`);
-}
-//
 function Currency (currencyCode, currencySymbol, currencyName) {
   this.code = currencyCode;
   this.symbol = currencySymbol;
@@ -54,7 +48,11 @@ Currency.prototype = {
 
 function getBtcData (e) {
 
-  let yourCurrency = new Currency(currencyInfo[e.target.dataset.currency][0],currencyInfo[e.target.dataset.currency][1],currencyInfo[e.target.dataset.currency][2]);
+  let yourCurrency = new Currency(
+                              currencyInfo[e.target.dataset.currency][0],
+                              currencyInfo[e.target.dataset.currency][1],
+                              currencyInfo[e.target.dataset.currency][2]
+                            );
 
   axios.all([yourCurrency.getTodayPrice(), yourCurrency.getYesterdayPrice()])
   .then(axios.spread(function (current, yesterday) {
