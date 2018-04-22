@@ -33,26 +33,23 @@ for (let i = 0; i < currencyInfo.length; i++) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-
   dqsa('.currency-buttons .dropdown-item').forEach(getPrice => getPrice.addEventListener('click', getBtcData));
   let cryptoQuoteIndex = Math.floor(Math.random() * cryptoQuotes.length);
   dqs('#quote-text').innerHTML = `\"${cryptoQuotes[cryptoQuoteIndex][0]}\"`;
   dqs('#quote-source').innerHTML = `${cryptoQuotes[cryptoQuoteIndex][1]}`;
-
 });
 
-function Currency (currencyCode, currencySymbol, currencyName, countryCode) {
-  this.code = currencyCode;
-  this.symbol = currencySymbol;
-  this.name = currencyName;
-  this.flag = countryCode;
-}
-
-Currency.prototype = {
-  getTodaysPrice: function () {
+class Currency {
+  constructor(currencyCode, currencySymbol, currencyName, countryCode) {
+    this.code = currencyCode;
+    this.symbol = currencySymbol;
+    this.name = currencyName;
+    this.flag = countryCode;
+  }
+  getTodaysPrice() {
     return axios.get(`${apiBase}currentprice/${this.code}.json`);
-  },
-  getYesterdaysPrice: function () {
+  }
+  getYesterdaysPrice() {
     return axios.get(`${apiBase}historical/close.json?currency=${this.code}&for=yesterday`);
   }
 }
@@ -68,19 +65,20 @@ function getBtcData (e) {
 
   axios.all([yourCurrency.getTodaysPrice(), yourCurrency.getYesterdaysPrice()])
   .then(axios.spread(function (current, yesterday) {
-    let price = Number(current.data.bpi[yourCurrency.code].rate.replace(',','')).toFixed(2);
-    let yesterdayDate = Object.keys(yesterday.data.bpi);
-    let histPrice = yesterday.data.bpi[yesterdayDate[0]];
-    let pricePcntChange = ((price - histPrice) / price * 100).toFixed(2);
+    yourCurrency.currentPrice = Number(current.data.bpi[yourCurrency.code].rate.replace(',','')).toFixed(2);
+    yourCurrency.yesterdayDate = Object.keys(yesterday.data.bpi);
+    yourCurrency.historicalPrice = yesterday.data.bpi[yourCurrency.yesterdayDate[0]];
+    yourCurrency.pricePcntChange = ((yourCurrency.currentPrice - yourCurrency.historicalPrice) / yourCurrency.currentPrice * 100).toFixed(2);
 
     // display the content
-    dqs('#price').innerHTML = `<p>The current price of a Bitcoin in <span class="flag-icon flag-icon-${yourCurrency.flag}"></span> ${yourCurrency.name} is <strong>${yourCurrency.symbol}${Number(price).toLocaleString()}</strong>.</p>`;
-    dqs('#historical-price').innerHTML = `<p>Yesterday, the price was <strong>${yourCurrency.symbol}${Number(histPrice).toLocaleString()}</strong>.</p>`;
-    if (pricePcntChange > 0) {
-      dqs('#price-change').innerHTML = `Since then, its value has grown by <span id="price-change-pcnt" class="pcnt-up-text">${pricePcntChange}%</span>. Make it rain!`;
+    dqs('#price').innerHTML = `<p>The current price of a Bitcoin in <span class="flag-icon flag-icon-${yourCurrency.flag}"></span> ${yourCurrency.name} is <strong>${yourCurrency.symbol}${Number(yourCurrency.currentPrice).toLocaleString()}</strong>.</p>`;
+    dqs('#historical-price').innerHTML = `<p>Yesterday, the price was <strong>${yourCurrency.symbol}${Number(yourCurrency.historicalPrice).toLocaleString()}</strong>.</p>`;
+    if (yourCurrency.pricePcntChange > 0) {
+      dqs('#price-change').innerHTML = `Since then, its value has grown by <span id="price-change-pcnt" class="pcnt-up-text">${yourCurrency.pricePcntChange}%</span>. Make it rain!`;
     }
-    else if (pricePcntChange < 0) {
-      dqs('#price-change').innerHTML = `Since then, its value has decreased by <span id="price-change-pcnt" class="pcnt-down-text">${pricePcntChange}%</span>. The end is near!`;
+    else if (yourCurrency.pricePcntChange < 0) {
+      dqs('#price-change').innerHTML = `Since then, its value has decreased by <span id="price-change-pcnt" class="pcnt-down-text">${yourCurrency.pricePcntChange}%</span>. The end is near!`;
     }
+    console.log(yourCurrency);
   }));
 }
