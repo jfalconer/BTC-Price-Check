@@ -54,31 +54,51 @@ class Currency {
   }
 }
 
-function getBtcData (e) {
+class HistoricalData {
+  constructor(price, date, change) {
+    this.price = price;
+    this.date = date;
+    this.change = change;
+  }
+}
 
-  let yourCurrency = new Currency(
-                              currencyInfo[e.target.dataset.currency][0],
+let worldBank = {};
+
+function getBtcData (e) {
+  let fiat = currencyInfo[e.target.dataset.currency][0];
+  worldBank[fiat] = new Currency(
+                              fiat,
                               currencyInfo[e.target.dataset.currency][1],
                               currencyInfo[e.target.dataset.currency][2],
                               currencyInfo[e.target.dataset.currency][3]
                             );
 
+  let yourCurrency = worldBank[fiat];
+
   axios.all([yourCurrency.getTodaysPrice(), yourCurrency.getYesterdaysPrice()])
   .then(axios.spread(function (current, yesterday) {
-    yourCurrency.currentPrice = Number(current.data.bpi[yourCurrency.code].rate.replace(',','')).toFixed(2);
+    // find price data and calculate daily % change
+    yourCurrency.thisDay = current.data.time.updatedISO.substring(0, 10); console.log(yourCurrency.thisDay);
+    yourCurrency.currentPrice = Number(current.data.bpi[yourCurrency.code].rate_float);
     yourCurrency.yesterdayDate = Object.keys(yesterday.data.bpi);
     yourCurrency.historicalPrice = yesterday.data.bpi[yourCurrency.yesterdayDate[0]];
     yourCurrency.pricePcntChange = ((yourCurrency.currentPrice - yourCurrency.historicalPrice) / yourCurrency.currentPrice * 100).toFixed(2);
+    // first steps towards writing historical data in a json file for charting
+    worldBank[fiat][yourCurrency.thisDay] = new HistoricalData(yourCurrency.currentPrice, yourCurrency.thisDay, yourCurrency.pricePcntChange);
+    console.log(worldBank.AUD["2018-04-23"]);
 
     // display the content
-    dqs('#price').innerHTML = `<p>The current price of a Bitcoin in <span class="flag-icon flag-icon-${yourCurrency.flag}"></span> ${yourCurrency.name} is <strong>${yourCurrency.symbol}${Number(yourCurrency.currentPrice).toLocaleString()}</strong>.</p>`;
-    dqs('#historical-price').innerHTML = `<p>Yesterday, the price was <strong>${yourCurrency.symbol}${Number(yourCurrency.historicalPrice).toLocaleString()}</strong>.</p>`;
+    dqs('#price').innerHTML = `<p>The current price of a Bitcoin in <span class="flag-icon flag-icon-${yourCurrency.flag}"></span> ${yourCurrency.name} is <strong>${yourCurrency.symbol}${Number(yourCurrency.currentPrice.toFixed(2)).toLocaleString()}</strong>.</p>`;
+    dqs('#historical-price').innerHTML = `<p>Yesterday, the price was <strong>${yourCurrency.symbol}${Number(yourCurrency.historicalPrice.toFixed(2)).toLocaleString()}</strong>.</p>`;
     if (yourCurrency.pricePcntChange > 0) {
       dqs('#price-change').innerHTML = `Since then, its value has grown by <span id="price-change-pcnt" class="pcnt-up-text">${yourCurrency.pricePcntChange}%</span>. Make it rain!`;
     }
     else if (yourCurrency.pricePcntChange < 0) {
       dqs('#price-change').innerHTML = `Since then, its value has decreased by <span id="price-change-pcnt" class="pcnt-down-text">${yourCurrency.pricePcntChange}%</span>. The end is near!`;
     }
-    console.log(yourCurrency);
+
+
   }));
+
+
 }
